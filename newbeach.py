@@ -4,13 +4,15 @@ import requests
 import subprocess
 import shutil
 import yt_dlp
+from pathlib import Path
 from bs4 import BeautifulSoup
 
 # --- Configuration ---
 BASE_URL = "https://www.newgrounds.com/audio"
 # Creates a folder like 0108 for Jan 8th
 TODAY_STR = datetime.datetime.now().strftime("%m%d")
-SAVE_DIR = os.path.expanduser(f"~/music/newbeach/{TODAY_STR}")
+MUSIC_DIR = Path("~/music/newbeach").expanduser()
+SAVE_DIR = os.path.expanduser(MUSIC_DIR / Path(TODAY_STR))
 
 def get_recent_urls(limit=10):
     """Scrapes the main audio page for the most recent submission links."""
@@ -93,6 +95,10 @@ def create_metadata_files(target_dir, urls):
     return playlist_path, tracks_txt_path
 
 def main():
+    # Make sure the dir exists
+    path = Path(MUSIC_DIR)
+    path.touch(exist_ok=True)
+
     # 1. Get URLs
     urls = get_recent_urls(10)
 
