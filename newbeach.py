@@ -3,28 +3,28 @@ import datetime
 import requests
 import subprocess
 import shutil
-from bs4 import BeautifulSoup
 import yt_dlp
+from bs4 import BeautifulSoup
 
 # --- Configuration ---
 BASE_URL = "https://www.newgrounds.com/audio"
-# Creates a folder like ~/ng/0108 for Jan 8th
+# Creates a folder like 0108 for Jan 8th
 TODAY_STR = datetime.datetime.now().strftime("%m%d")
 SAVE_DIR = os.path.expanduser(f"~/music/newbeach/{TODAY_STR}")
 
 def get_recent_urls(limit=10):
     """Scrapes the main audio page for the most recent submission links."""
     print(f"[1/4] Fetching recent tracks from {BASE_URL}...")
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {"User-Agent": "Mozilla/5.0"}
 
     try:
         r = requests.get(BASE_URL, headers=headers)
-        soup = BeautifulSoup(r.text, 'html.parser')
+        soup = BeautifulSoup(r.text, "html.parser")
 
         links = []
-        for a in soup.find_all('a', href=True):
-            if '/audio/listen/' in a['href']:
-                full_link = a['href']
+        for a in soup.find_all("a", href=True):
+            if "/audio/listen/" in a["href"]:
+                full_link = a["href"]
                 if full_link not in links:
                     links.append(full_link)
                     if len(links) >= limit:
@@ -43,11 +43,11 @@ def download_tracks(urls, target_dir):
 
     # We use playlist_index to ensure filenames match our URL list order
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': f'{target_dir}/%(playlist_index)s - %(title)s.%(ext)s',
-        'noplaylist': True,
-        'quiet': True,
-        'no_warnings': True,
+        "format": "bestaudio/best",
+        "outtmpl": f"{target_dir}/%(playlist_index)s - %(title)s.%(ext)s",
+        "noplaylist": True,
+        "quiet": True,
+        "no_warnings": True,
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -62,12 +62,12 @@ def create_metadata_files(target_dir, urls):
 
     # Sort files by the numeric index prefix (e.g., '1 - Song.mp3')
     # This ensures they match the order of the 'urls' list.
-    files = [f for f in os.listdir(target_dir) if f.endswith('.mp3')]
+    files = [f for f in os.listdir(target_dir) if f.endswith(".mp3")]
 
     # Helper to extract the leading number for sorting
     def get_index(filename):
         try:
-            return int(filename.split(' - ')[0])
+            return int(filename.split(" - ")[0])
         except ValueError:
             return 999
 
