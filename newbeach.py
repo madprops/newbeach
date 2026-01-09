@@ -8,7 +8,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 # --- Configuration ---
-BASE_URL = "https://www.newgrounds.com/audio"
+BASE_URL = "https://www.newgrounds.com/audio/browse"
 # Creates a folder like 0108 for Jan 8th
 TODAY_STR = datetime.datetime.now().strftime("%m%d")
 MUSIC_DIR = Path("~/music/newbeach").expanduser()
@@ -78,7 +78,7 @@ def create_metadata_files(target_dir, urls):
     playlist_path = os.path.join(target_dir, "playlist.m3u")
     tracks_txt_path = os.path.join(target_dir, "tracks.txt")
 
-    # Write the playlist for mpv
+    # Write the playlist file
     with open(playlist_path, "w") as f_play:
         for file in files:
             f_play.write(file + "\n")
@@ -116,13 +116,6 @@ def main():
     print(f"READY. Saved to: {SAVE_DIR}")
     print(f"URL List saved to: {tracks_txt}")
     print("="*60)
-
-    # 4. Play
-    if shutil.which("mpv"):
-        print("Launching MPV... (Press 'Enter' to skip, 'q' to quit)")
-        subprocess.run(["mpv", "--playlist=" + playlist], cwd=SAVE_DIR)
-    else:
-        print("Error: 'mpv' is not installed.")
 
 if __name__ == "__main__":
     main()
